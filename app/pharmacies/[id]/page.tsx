@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import {
   MapPin,
   Phone,
@@ -19,14 +19,15 @@ import { Input } from '@/components/ui/input';
 export default function PharmacyProfilePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = use(params);
   const [searchMedicine, setSearchMedicine] = useState('');
   const [isFavorite, setIsFavorite] = useState(false);
 
   // Mock pharmacy data
   const pharmacy = {
-    id: params.id,
+    id: id,
     name: 'Health Plus Pharmacy',
     location: 'Downtown Medical Center',
     distance: 0.5,
