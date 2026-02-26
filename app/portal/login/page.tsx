@@ -136,21 +136,11 @@ function LoginForm() {
             </Button>
           </form>
 
-          {/* Demo Credentials */}
-          <div className="mt-8 p-4 bg-muted rounded-2xl space-y-2">
-            <p className="text-xs font-semibold text-foreground uppercase tracking-wide">
-              Demo Credentials
-            </p>
-            <div className="text-sm text-muted-foreground space-y-1">
-              <p>
-                <span className="font-medium text-foreground">Pharmacist:</span>{' '}
-                demo@pharmacy.com / demo123
-              </p>
-              <p>
-                <span className="font-medium text-foreground">Admin:</span>{' '}
-                admin@medifinder.com / admin123
-              </p>
-            </div>
+          <div className="mt-6 text-center text-sm text-muted-foreground">
+            New pharmacist?{' '}
+            <Link href="/portal/signup" className="text-primary hover:underline font-semibold">
+              Create an account
+            </Link>
           </div>
         </div>
 

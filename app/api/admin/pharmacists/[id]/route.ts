@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AUTH_COOKIE_NAME, decodeAuthPayload } from '@/lib/auth';
-import { mockPharmacistStore } from '@/lib/mock-data';
+import { listPharmacists, updateUser, deleteUser } from '@/lib/db/users';
 
 function requireAdmin(req: NextRequest): boolean {
   const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
@@ -18,21 +18,46 @@ export async function PUT(
   }
 
   const { id } = await params;
-  const index = mockPharmacistStore.findIndex((p) => p.id === id);
 
-  if (index === -1) {
+  // Find the user record by id
+  let pharmacists;
+  try {
+    pharmacists = await listPharmacists();
+  } catch {
+    return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
+  }
+
+  const record = pharmacists.find((p) => p.id === id);
+  if (!record) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  let body: Partial<{ name: string; email: string; pharmacy: string; status: 'active' | 'inactive' }>;
+  let body: Partial<{ name: string; pharmacy: string; status: 'active' | 'inactive' }>;
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
-  mockPharmacistStore[index] = { ...mockPharmacistStore[index], ...body };
-  return NextResponse.json({ pharmacist: mockPharmacistStore[index] });
+  try {
+    const updated = await updateUser(record.email, {
+      name: body.name,
+      pharmacyName: body.pharmacy,
+      status: body.status,
+    });
+    return NextResponse.json({
+      pharmacist: {
+        id: updated?.id ?? id,
+        name: updated?.name ?? record.name,
+        email: updated?.email ?? record.email,
+        pharmacy: updated?.pharmacyName ?? record.pharmacyName,
+        status: updated?.status ?? record.status,
+        createdAt: updated?.createdAt ?? record.createdAt,
+      },
+    });
+  } catch {
+    return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
+  }
 }
 
 export async function DELETE(
@@ -44,12 +69,23 @@ export async function DELETE(
   }
 
   const { id } = await params;
-  const index = mockPharmacistStore.findIndex((p) => p.id === id);
 
-  if (index === -1) {
+  let pharmacists;
+  try {
+    pharmacists = await listPharmacists();
+  } catch {
+    return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
+  }
+
+  const record = pharmacists.find((p) => p.id === id);
+  if (!record) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  mockPharmacistStore.splice(index, 1);
-  return NextResponse.json({ success: true });
+  try {
+    await deleteUser(record.email);
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
+  }
 }

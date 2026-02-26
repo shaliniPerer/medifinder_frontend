@@ -31,6 +31,7 @@ interface PharmacistFormData {
   email: string;
   pharmacy: string;
   status: 'active' | 'inactive';
+  password: string;
 }
 
 const emptyForm: PharmacistFormData = {
@@ -38,6 +39,7 @@ const emptyForm: PharmacistFormData = {
   email: '',
   pharmacy: '',
   status: 'active',
+  password: '',
 };
 
 export default function AdminDashboard() {
@@ -296,6 +298,22 @@ export default function AdminDashboard() {
                     required
                   />
                 </div>
+                {!editingId && (
+                  <div>
+                    <label className="block text-sm font-semibold text-foreground mb-2">
+                      Password
+                    </label>
+                    <Input
+                      type="password"
+                      placeholder="Minimum 8 characters"
+                      className="py-5 px-4 rounded-xl bg-muted border-0 focus:ring-2 focus:ring-primary focus:bg-white"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required={!editingId}
+                      minLength={8}
+                    />
+                  </div>
+                )}
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-2">
                     Status

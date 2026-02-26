@@ -4,8 +4,8 @@ import { AUTH_COOKIE_NAME, decodeAuthPayload } from '@/lib/auth';
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Allow portal login page without auth
-  if (pathname === '/portal/login') {
+  // Allow portal login and signup pages without auth
+  if (pathname === '/portal/login' || pathname === '/portal/signup') {
     return NextResponse.next();
   }
 
