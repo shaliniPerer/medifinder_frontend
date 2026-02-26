@@ -92,7 +92,7 @@ export default function Home() {
             <Link href="/pharmacies">
               <Button variant="ghost">Pharmacies</Button>
             </Link>
-            <Link href="/pharmacist/login">
+            <Link href="/portal/login">
               <Button className="bg-primary hover:bg-primary/90 text-white">
                 Pharmacist Login
               </Button>
