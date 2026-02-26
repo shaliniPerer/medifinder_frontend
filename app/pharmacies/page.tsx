@@ -122,7 +122,7 @@ export default function PharmaciesPage() {
             <Link href="/">
               <Button variant="ghost">Home</Button>
             </Link>
-            <Link href="/pharmacist/login">
+            <Link href="/portal/login">
               <Button className="bg-primary hover:bg-primary/90 text-white">
                 Pharmacist Login
               </Button>
